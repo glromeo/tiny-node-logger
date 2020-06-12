@@ -34,7 +34,7 @@ function stringify(o, color = 'black') {
     } else if (type === "object") {
         return util.inspect(o, {colors: true, depth: 3});
     } else {
-        return o;
+        return String(o);
     }
 }
 
