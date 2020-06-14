@@ -28,9 +28,10 @@
   "devDependencies": {
     "@types/chalk": "^2.2.0",
     "@types/jest": "^26.0.0",
+    "coveralls": "^3.1.0",
     "jest": "^26.0.1"
   },
   "scripts": {
-    "test": "jest --coverage"
+    "test": "jest --coverage && coveralls < coverage/lcov.info"
   }
 }
