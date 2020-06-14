@@ -77,7 +77,7 @@ describe("tiny node logger", function () {
             `[${chalk.blue("2020-06-10 11:51:59.101")}] `,
             chalk.black("info"),
             " ",
-            123,
+            "123",
             "\n"
         ]) expect(process.stdout.write).toHaveBeenNthCalledWith(++count, arg);
         expect(process.stdout.write).toBeCalledTimes(count);
@@ -124,7 +124,7 @@ describe("tiny node logger", function () {
         for (const arg of [
             `[${chalk.blue("2020-06-10 11:51:59.101")}] `,
             chalk.gray("info "),
-            123,
+            "123",
             " ",
             chalk.green("green"),
             " ",
