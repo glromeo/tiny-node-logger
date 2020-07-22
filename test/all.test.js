@@ -13,10 +13,10 @@ const {
 
 describe("tiny node logger", function () {
 
-    process.stdout.write = jest.fn();
+    log.write = jest.fn();
 
     beforeEach(function () {
-        process.stdout.write.mockReset();
+        log.write.mockReset();
     });
 
     it("colors", function () {
@@ -47,11 +47,11 @@ describe("tiny node logger", function () {
         expect(log.level.description).toStrictEqual("info");
 
         log.info("info");
-        expect(process.stdout.write).toBeCalledTimes(4); // timestamp, details "", "info", "\n"
+        expect(log.write).toBeCalledTimes(4); // timestamp, details "", "info", "\n"
         log.debug("debug");
-        expect(process.stdout.write).toBeCalledTimes(4); // count stays same because debug is ignored
+        expect(log.write).toBeCalledTimes(4); // count stays same because debug is ignored
         log.error("error");
-        expect(process.stdout.write).toBeCalledTimes(8); // count is doubled because of error
+        expect(log.write).toBeCalledTimes(8); // count is doubled because of error
 
 
     });
@@ -80,11 +80,11 @@ describe("tiny node logger", function () {
             " ",
             "123",
             "\n"
-        ]) expect(process.stdout.write).toHaveBeenNthCalledWith(++count, arg);
-        expect(process.stdout.write).toBeCalledTimes(count);
+        ]) expect(log.write).toHaveBeenNthCalledWith(++count, arg);
+        expect(log.write).toBeCalledTimes(count);
 
         log.debug("debug");
-        expect(process.stdout.write).toBeCalledTimes(count);
+        expect(log.write).toBeCalledTimes(count);
 
         log.warn("warning", {a: 0}, new Error("any error"), {e1: {e2: {e3: {e4: {e5: 0}}}}});
 
@@ -99,8 +99,8 @@ describe("tiny node logger", function () {
             " ",
             `{\n  e1: { e2: { e3: { e4: ${chalk.cyan("[Object]")} } } }\n}`,
             "\n"
-        ]) expect(process.stdout.write).toHaveBeenNthCalledWith(++count, arg);
-        expect(process.stdout.write).toBeCalledTimes(count);
+        ]) expect(log.write).toHaveBeenNthCalledWith(++count, arg);
+        expect(log.write).toBeCalledTimes(count);
     });
 
     it("logging (tagged template)", function () {
@@ -132,8 +132,8 @@ describe("tiny node logger", function () {
             chalk.green("green"),
             " ",
             "\n"
-        ]) expect(process.stdout.write).toHaveBeenNthCalledWith(++count, arg);
-        expect(process.stdout.write).toBeCalledTimes(count);
+        ]) expect(log.write).toHaveBeenNthCalledWith(++count, arg);
+        expect(log.write).toBeCalledTimes(count);
 
         log.debug`debug`;
 
@@ -142,7 +142,7 @@ describe("tiny node logger", function () {
             "",
             chalk.green("debug"),
             "\n"
-        ]) expect(process.stdout.write).toHaveBeenNthCalledWith(++count, arg);
+        ]) expect(log.write).toHaveBeenNthCalledWith(++count, arg);
 
         log.warn`${{a: 0}}, ${new Error("any error")} ${{e1: {e2: {e3: {e4: {e5: 0}}}}}}`;
 
@@ -155,8 +155,8 @@ describe("tiny node logger", function () {
             " ",
             `{\n  e1: { e2: { e3: { e4: ${chalk.cyan("[Object]")} } } }\n}`,
             "\n"
-        ]) expect(process.stdout.write).toHaveBeenNthCalledWith(++count, arg);
-        expect(process.stdout.write).toBeCalledTimes(count);
+        ]) expect(log.write).toHaveBeenNthCalledWith(++count, arg);
+        expect(log.write).toBeCalledTimes(count);
     });
 
     it("logging nothing", function () {
@@ -177,7 +177,7 @@ describe("tiny node logger", function () {
         log.warn`it doesn't matter`;
         log.error`it doesn't matter`;
 
-        expect(process.stdout.write).not.toHaveBeenCalled();
+        expect(log.write).not.toHaveBeenCalled();
     });
 
     it("stringify", function () {
@@ -201,10 +201,16 @@ describe("tiny node logger", function () {
         log.setLevel("info");
         log.details = true;
 
-        log.info("this is the line!");
+        log.info("details enabled!");
 
-        expect(process.stdout.write).toHaveBeenNthCalledWith(1, `[${chalk.blue("2020-06-10 11:51:59.101")}] `);
-        expect(process.stdout.write).toHaveBeenNthCalledWith(2, "all.test.js (153:9) ");
-        expect(process.stdout.write).toHaveBeenNthCalledWith(3, chalk.black("this is the line!"));
+        expect(log.write).toHaveBeenNthCalledWith(2, "all.test.js (153:9) ");
+        expect(log.write).toHaveBeenNthCalledWith(3, chalk.black("details enabled!"));
+
+        log.details = false;
+
+        log.info("details disabled!");
+
+        expect(log.write).toHaveBeenNthCalledWith(6, "");
+        expect(log.write).toHaveBeenNthCalledWith(7, chalk.black("details disabled!"));
     });
 });

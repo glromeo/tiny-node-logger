@@ -38,7 +38,7 @@ function stringify(o, color = "black") {
     }
 }
 
-const stdout = process.stdout;
+let write = process.stdout.write.bind(process.stdout);
 
 function writeln(color, head, tail) {
 
@@ -47,22 +47,22 @@ function writeln(color, head, tail) {
     if (Array.isArray(head) && count === (head.length - 1)) {
         for (let i = 0; i < count; i++) {
             if (head[i].length) {
-                stdout.write(stringify(head[i], color));
+                write(stringify(head[i], color));
             }
-            stdout.write(stringify(tail[i], color));
+            write(stringify(tail[i], color));
         }
         if (head[count].length) {
-            stdout.write(stringify(head[count], color));
+            write(stringify(head[count], color));
         }
     } else {
-        stdout.write(stringify(head, color));
+        write(stringify(head, color));
         for (const item of tail) {
-            stdout.write(" ");
-            stdout.write(stringify(item, color));
+            write(" ");
+            write(stringify(item, color));
         }
     }
 
-    stdout.write("\n");
+    write("\n");
 }
 
 module.exports = {
@@ -78,40 +78,40 @@ module.exports = {
 
     trace(strings, ...keys) {
         if (levels.has(TRACE)) {
-            stdout.write(timestamp(colors.timestamp));
-            stdout.write(this.details);
+            write(timestamp(colors.timestamp));
+            write(this.details);
             writeln(colors.trace, strings, keys);
         }
     },
 
     debug(strings, ...keys) {
         if (levels.has(DEBUG)) {
-            stdout.write(timestamp(colors.timestamp));
-            stdout.write(this.details);
+            write(timestamp(colors.timestamp));
+            write(this.details);
             writeln(colors.debug, strings, keys);
         }
     },
 
     info(strings, ...keys) {
         if (levels.has(INFO)) {
-            stdout.write(timestamp(colors.timestamp));
-            stdout.write(this.details);
+            write(timestamp(colors.timestamp));
+            write(this.details);
             writeln(colors.info, strings, keys);
         }
     },
 
     warn(strings, ...keys) {
         if (levels.has(WARN)) {
-            stdout.write(timestamp(colors.timestamp));
-            stdout.write(this.details);
+            write(timestamp(colors.timestamp));
+            write(this.details);
             writeln(colors.warn, strings, keys);
         }
     },
 
     error(strings, ...keys) {
         if (levels.has(ERROR)) {
-            stdout.write(timestamp(colors.timestamp));
-            stdout.write(this.details);
+            write(timestamp(colors.timestamp));
+            write(this.details);
             writeln(colors.error, strings, keys);
         }
     },
@@ -121,10 +121,17 @@ module.exports = {
     },
 
     set details(show) {
-        if (show) Object.defineProperty(this, "details", {
+
+        const details = require("./details.js");
+        const nothing = () => "";
+
+        const set = (show) => Object.defineProperty(this, "details", {
             enumerable: true,
-            get: require("./details.js")
+            get: show ? details : nothing,
+            set
         });
+
+        set(show);
     },
 
     set level(level) {
@@ -159,5 +166,15 @@ module.exports = {
 
     stringify
 };
+
+Object.defineProperty(module.exports, "write", {
+    enumerable: false,
+    get() {
+        return write;
+    },
+    set(replacement) {
+        write = replacement;
+    }
+});
 
 module.exports.level = "info";

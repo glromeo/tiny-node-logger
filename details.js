@@ -6,7 +6,7 @@ function getStackTrace(error, stack) {
 function getCallSite() {
     const stackTraceLimit = Error.stackTraceLimit;
     const prepareStackTrace = Error.prepareStackTrace;
-    Error.stackTraceLimit = 4;
+    Error.stackTraceLimit = 10;
     Error.prepareStackTrace = getStackTrace;
     const {stack} = new Error();
     Error.prepareStackTrace = prepareStackTrace;
