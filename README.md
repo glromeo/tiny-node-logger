@@ -15,21 +15,40 @@
 npm i tiny-node-logger
 ```
 
-### Usage
+### Example
+Using tagged templates
 ```javascript
-const log = require("tiny-node-logger");
+const {trace, debug, info, warn, error, setLevel} = require("tiny-node-logger");
 
-log.level = "trace";
+setLevel("trace"); // otherwise defaults to "info"
 
-log.trace("Hello world!");
-log.debug("Hello world!");
-log.info("Hello world!");
-log.warn("Hello world!");
-log.error("Hello world!");
+trace`Hello world!`
+debug`Hello world!`
+info`Hello world!`
+warn`Hello world!`
+error`Hello world!`
 ```
 produces the following output:
 
-![colored log output](https://github.com/glromeo/tiny-node-logger/blob/master/sample.png?raw=true)
+![colored log output](https://github.com/glromeo/tiny-node-logger/blob/master/images/example-plain.png?raw=true)
+
+### Example (enabling details)
+```javascript
+  1 |  const log = require("tiny-node-logger");
+  2 |  
+  3 |  log.level = "trace";
+  4 |  
+  5 |  log.details = true;
+  6 |  
+  7 |  log.trace("Hello world!");
+  8 |  log.debug("Hello world!");
+  9 |  log.info("Hello world!");
+ 10 |  log.warn("Hello world!");
+ 11 |  log.error("Hello world!");
+```
+produces the following output:
+
+![colored log output](https://github.com/glromeo/tiny-node-logger/blob/master/images/example-with-details.png?raw=true)
 
 #### References
 

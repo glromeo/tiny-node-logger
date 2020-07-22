@@ -11,21 +11,21 @@ const ERROR = Symbol.for("error");
 const NOTHING = Symbol.for("nothing");
 
 const colors = {
-    default: 'black',
-    trace: 'gray',
-    debug: 'green',
-    info: 'black',
-    warn: 'yellow',
-    error: 'red',
-    timestamp: 'blue'
-}
+    default: "black",
+    trace: "gray",
+    debug: "green",
+    info: "black",
+    warn: "yellow",
+    error: "red",
+    timestamp: "blue"
+};
 
 function timestamp(color) {
     const date = new Date().toISOString();
-    return '[' + chalk[color](date.substring(0, 10) + ' ' + date.substring(11, 23)) + '] ';
+    return "[" + chalk[color](date.substring(0, 10) + " " + date.substring(11, 23)) + "] ";
 }
 
-function stringify(o, color = 'black') {
+function stringify(o, color = "black") {
     const type = typeof o;
     if (type === "string" && color) {
         const hasEscape = o.charCodeAt(0) === 27;
@@ -38,31 +38,31 @@ function stringify(o, color = 'black') {
     }
 }
 
-function writeln(color, timestamp, head, tail) {
+const stdout = process.stdout;
 
-    process.stdout.write(timestamp);
+function writeln(color, head, tail) {
 
     const count = tail.length;
 
     if (Array.isArray(head) && count === (head.length - 1)) {
         for (let i = 0; i < count; i++) {
             if (head[i].length) {
-                process.stdout.write(stringify(head[i], color));
+                stdout.write(stringify(head[i], color));
             }
-            process.stdout.write(stringify(tail[i], color));
+            stdout.write(stringify(tail[i], color));
         }
         if (head[count].length) {
-            process.stdout.write(stringify(head[count], color));
+            stdout.write(stringify(head[count], color));
         }
     } else {
-        process.stdout.write(stringify(head, color));
+        stdout.write(stringify(head, color));
         for (const item of tail) {
-            process.stdout.write(' ');
-            process.stdout.write(stringify(item, color));
+            stdout.write(" ");
+            stdout.write(stringify(item, color));
         }
     }
 
-    process.stdout.write('\n');
+    stdout.write("\n");
 }
 
 module.exports = {
@@ -78,40 +78,56 @@ module.exports = {
 
     trace(strings, ...keys) {
         if (levels.has(TRACE)) {
-            writeln(colors.trace, timestamp(colors.timestamp), strings, keys);
+            stdout.write(timestamp(colors.timestamp));
+            stdout.write(this.details);
+            writeln(colors.trace, strings, keys);
         }
     },
 
     debug(strings, ...keys) {
         if (levels.has(DEBUG)) {
-            writeln(colors.debug, timestamp(colors.timestamp), strings, keys);
+            stdout.write(timestamp(colors.timestamp));
+            stdout.write(this.details);
+            writeln(colors.debug, strings, keys);
         }
     },
 
     info(strings, ...keys) {
         if (levels.has(INFO)) {
-            writeln(colors.info, timestamp(colors.timestamp), strings, keys);
+            stdout.write(timestamp(colors.timestamp));
+            stdout.write(this.details);
+            writeln(colors.info, strings, keys);
         }
     },
 
     warn(strings, ...keys) {
         if (levels.has(WARN)) {
-            writeln(colors.warn, timestamp(colors.timestamp), strings, keys);
+            stdout.write(timestamp(colors.timestamp));
+            stdout.write(this.details);
+            writeln(colors.warn, strings, keys);
         }
     },
 
     error(strings, ...keys) {
         if (levels.has(ERROR)) {
-            writeln(colors.error, timestamp(colors.timestamp), strings, keys);
+            stdout.write(timestamp(colors.timestamp));
+            stdout.write(this.details);
+            writeln(colors.error, strings, keys);
         }
     },
 
-    stringify
-}
+    get details() {
+        return "";
+    },
 
-Object.defineProperty(module.exports, "level", {
-    enumerable: true,
-    set(level) {
+    set details(show) {
+        if (show) Object.defineProperty(this, "details", {
+            enumerable: true,
+            get: require("./details.js")
+        });
+    },
+
+    set level(level) {
         // noinspection FallThroughInSwitchStatementJS
         const sym = typeof level === "string" ? Symbol.for(level.toLowerCase()) : level;
         levels.clear();
@@ -132,9 +148,16 @@ Object.defineProperty(module.exports, "level", {
                 throw new Error("cannot set level: " + level);
         }
     },
-    get() {
+
+    get level() {
         return levels.values().next().value || NOTHING;
-    }
-})
+    },
+
+    setLevel(value) {
+        this.level = value;
+    },
+
+    stringify
+};
 
 module.exports.level = "info";

@@ -1,6 +1,8 @@
-const log = require("tiny-node-logger");
+const log = require("../index.js");
 
 log.level = log.TRACE;
+
+log.details = true;
 
 log.trace("Hello world!");
 log.debug("Hello world!");

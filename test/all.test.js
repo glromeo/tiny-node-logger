@@ -20,14 +20,14 @@ describe("tiny node logger", function () {
     });
 
     it("colors", function () {
-        expect(colors.default).toStrictEqual('black');
-        expect(colors.trace).toStrictEqual('gray');
-        expect(colors.debug).toStrictEqual('green');
-        expect(colors.info).toStrictEqual('black');
-        expect(colors.warn).toStrictEqual('yellow');
-        expect(colors.error).toStrictEqual('red');
-        expect(colors.timestamp).toStrictEqual('blue');
-    })
+        expect(colors.default).toStrictEqual("black");
+        expect(colors.trace).toStrictEqual("gray");
+        expect(colors.debug).toStrictEqual("green");
+        expect(colors.info).toStrictEqual("black");
+        expect(colors.warn).toStrictEqual("yellow");
+        expect(colors.error).toStrictEqual("red");
+        expect(colors.timestamp).toStrictEqual("blue");
+    });
 
     it("levels", function () {
 
@@ -47,14 +47,14 @@ describe("tiny node logger", function () {
         expect(log.level.description).toStrictEqual("info");
 
         log.info("info");
-        expect(process.stdout.write).toBeCalledTimes(3);
+        expect(process.stdout.write).toBeCalledTimes(4); // timestamp, details "", "info", "\n"
         log.debug("debug");
-        expect(process.stdout.write).toBeCalledTimes(3);
+        expect(process.stdout.write).toBeCalledTimes(4); // count stays same because debug is ignored
         log.error("error");
-        expect(process.stdout.write).toBeCalledTimes(6);
+        expect(process.stdout.write).toBeCalledTimes(8); // count is doubled because of error
 
 
-    })
+    });
 
     it("logging (classic)", function () {
 
@@ -67,7 +67,7 @@ describe("tiny node logger", function () {
             toISOString() {
                 return instants[instant++];
             }
-        }
+        };
 
         let count = 0;
 
@@ -75,6 +75,7 @@ describe("tiny node logger", function () {
 
         for (const arg of [
             `[${chalk.blue("2020-06-10 11:51:59.101")}] `,
+            "",
             chalk.black("info"),
             " ",
             "123",
@@ -89,6 +90,7 @@ describe("tiny node logger", function () {
 
         for (const arg of [
             `[${chalk.blue("2020-06-10 11:51:59.102")}] `,
+            "",
             chalk.yellow("warning"),
             " ",
             `{ a: ${chalk.yellow("0")} }`,
@@ -113,7 +115,7 @@ describe("tiny node logger", function () {
             toISOString() {
                 return instants[instant++];
             }
-        }
+        };
 
         let count = 0;
 
@@ -123,6 +125,7 @@ describe("tiny node logger", function () {
 
         for (const arg of [
             `[${chalk.blue("2020-06-10 11:51:59.101")}] `,
+            "",
             chalk.gray("info "),
             "123",
             " ",
@@ -136,6 +139,7 @@ describe("tiny node logger", function () {
 
         for (const arg of [
             `[${chalk.blue("2020-06-10 11:51:59.102")}] `,
+            "",
             chalk.green("debug"),
             "\n"
         ]) expect(process.stdout.write).toHaveBeenNthCalledWith(++count, arg);
@@ -144,6 +148,7 @@ describe("tiny node logger", function () {
 
         for (const arg of [
             `[${chalk.blue("2020-06-10 11:51:59.103")}] `,
+            "",
             `{ a: ${chalk.yellow("0")} }`,
             chalk.yellow(", "),
             expect.stringContaining("Error: any error"),
@@ -160,7 +165,7 @@ describe("tiny node logger", function () {
             toISOString() {
                 fail("shouldn't call timestamp()");
             }
-        }
+        };
 
         let count = 0;
 
@@ -177,5 +182,29 @@ describe("tiny node logger", function () {
 
     it("stringify", function () {
         expect(stringify("something")).toBe(chalk.black("something"));
-    })
-})
+    });
+
+    it("can log file and line number", function () {
+
+        let instants = [
+            "2020-06-10T11:51:59.101",
+            "2020-06-10T11:51:59.102",
+            "2020-06-10T11:51:59.103"
+        ], instant = 0;
+
+        global.Date = class {
+            toISOString() {
+                return instants[instant++];
+            }
+        };
+
+        log.setLevel("info");
+        log.details = true;
+
+        log.info("this is the line!");
+
+        expect(process.stdout.write).toHaveBeenNthCalledWith(1, `[${chalk.blue("2020-06-10 11:51:59.101")}] `);
+        expect(process.stdout.write).toHaveBeenNthCalledWith(2, "all.test.js (153:9) ");
+        expect(process.stdout.write).toHaveBeenNthCalledWith(3, chalk.black("this is the line!"));
+    });
+});
