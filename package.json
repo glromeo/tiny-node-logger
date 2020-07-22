@@ -1,7 +1,7 @@
 {
   "name": "tiny-node-logger",
   "main": "./index.js",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "A simple, *really simple*, node logging library with some nice features.",
   "author": "Gianluca Romeo <glromeo@gmail.com> (https://github.com/glromeo/tiny-node-logger)",
   "license": "MIT",
