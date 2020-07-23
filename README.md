@@ -43,7 +43,9 @@ produces the following output:
 
 ![colored log output](https://github.com/glromeo/tiny-node-logger/blob/master/images/example-plain.png?raw=true)
 
-### Example (enabling details)
+### Another example
+Here we enabled the details and we use function calls just to show that they are an alternative.
+It seems that tagged templates are faster but not by much.
 ```javascript
   1 |  const log = require("tiny-node-logger");
   2 |  
