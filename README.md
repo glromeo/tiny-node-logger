@@ -43,7 +43,8 @@ produces the following output:
 
 ![colored log output](https://github.com/glromeo/tiny-node-logger/blob/master/images/example-plain.png?raw=true)
 
-### Example (enabling details)
+### Another example
+Here we enabled the details and we use function calls just to show that they are an alternative.
 ```javascript
   1 |  const log = require("tiny-node-logger");
   2 |  
@@ -69,6 +70,7 @@ tagged templates x 1,487 ops/sec ±1.22% (86 runs sampled)
 detailed x 1,362 ops/sec ±0.83% (84 runs sampled)
 detailed tagged templates x 1,420 ops/sec ±0.85% (86 runs sampled)
 ```
+Oddly, it seems that tagged templates are faster ...but not by much.
 > The log library is practically as fast as console.log and the impact of enabling the details negligible in comparison to the cost of the write operations
 
 #### References
