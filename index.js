@@ -1,14 +1,6 @@
 const chalk = require("chalk");
 const util = require("util");
-
-const levels = new Set();
-
-const TRACE = Symbol.for("trace");
-const DEBUG = Symbol.for("debug");
-const INFO = Symbol.for("info");
-const WARN = Symbol.for("warn");
-const ERROR = Symbol.for("error");
-const NOTHING = Symbol.for("nothing");
+const {basename} = require("path");
 
 const colors = {
     default: "black",
@@ -20,12 +12,7 @@ const colors = {
     timestamp: "blue"
 };
 
-function timestamp(color) {
-    const date = new Date().toISOString();
-    return "[" + chalk[color](date.substring(0, 10) + " " + date.substring(11, 23)) + "] ";
-}
-
-function stringify(o, color = "black") {
+function stringify(o, color) {
     const type = typeof o;
     if (type === "string" && color) {
         const hasEscape = o.charCodeAt(0) === 27;
@@ -40,124 +27,99 @@ function stringify(o, color = "black") {
 
 let write = process.stdout.write.bind(process.stdout);
 
+let details = false;
+
+function getStackTrace(error, stack) {
+    return stack;
+}
+
+function callSite(error, depth) {
+    const prepareStackTrace = Error.prepareStackTrace;
+    Error.prepareStackTrace = getStackTrace;
+    const stack = error.stack;
+    Error.prepareStackTrace = prepareStackTrace;
+    return stack[depth];
+}
+
 function writeln(color, head, tail) {
 
     const count = tail.length;
 
+    const date = new Date().toISOString();
+    let line = "[" + chalk[colors.timestamp](date.substring(0, 10) + " " + date.substring(11, 23)) + "] ";
+
+    if (details) {
+        const cs = callSite(new Error(), 2);
+        line += `${(basename(cs.getFileName()))} (${(cs.getLineNumber())}:${(cs.getColumnNumber())}) `;
+    }
+
     if (Array.isArray(head) && count === (head.length - 1)) {
         for (let i = 0; i < count; i++) {
             if (head[i].length) {
-                write(stringify(head[i], color));
+                line += stringify(head[i], color);
             }
-            write(stringify(tail[i], color));
+            line += stringify(tail[i], color);
         }
         if (head[count].length) {
-            write(stringify(head[count], color));
+            line += stringify(head[count], color);
         }
     } else {
-        write(stringify(head, color));
+        line += stringify(head, color);
         for (const item of tail) {
-            write(" ");
-            write(stringify(item, color));
+            line += " " + stringify(item, color);
         }
     }
 
-    write("\n");
+    write(line + "\n");
 }
 
-module.exports = {
+function log(strings, ...keys) {
+    writeln(null, strings, keys);
+}
+
+module.exports = log;
+
+let threshold = 2;
+
+Object.assign(module.exports, {
 
     colors,
 
-    TRACE,
-    DEBUG,
-    INFO,
-    WARN,
-    ERROR,
-    NOTHING,
+    TRACE: 4,
+    DEBUG: 3,
+    INFO: 2,
+    WARN: 1,
+    ERROR: 0,
+    NOTHING: -1,
 
     trace(strings, ...keys) {
-        if (levels.has(TRACE)) {
-            write(timestamp(colors.timestamp));
-            write(this.details);
+        if (threshold >= 4) {
             writeln(colors.trace, strings, keys);
         }
     },
 
     debug(strings, ...keys) {
-        if (levels.has(DEBUG)) {
-            write(timestamp(colors.timestamp));
-            write(this.details);
+        if (threshold >= 3) {
             writeln(colors.debug, strings, keys);
         }
     },
 
     info(strings, ...keys) {
-        if (levels.has(INFO)) {
-            write(timestamp(colors.timestamp));
-            write(this.details);
+        if (threshold >= 2) {
             writeln(colors.info, strings, keys);
         }
     },
 
     warn(strings, ...keys) {
-        if (levels.has(WARN)) {
-            write(timestamp(colors.timestamp));
-            write(this.details);
+        if (threshold >= 1) {
             writeln(colors.warn, strings, keys);
         }
     },
 
     error(strings, ...keys) {
-        if (levels.has(ERROR)) {
-            write(timestamp(colors.timestamp));
-            write(this.details);
+        if (threshold >= 0) {
             writeln(colors.error, strings, keys);
         }
-    },
-
-    get details() {
-        return "";
-    },
-
-    set details(show) {
-
-        const details = require("./details.js");
-        const nothing = () => "";
-
-        const set = (show) => Object.defineProperty(this, "details", {
-            enumerable: true,
-            get: show ? details : nothing,
-            set
-        });
-
-        set(show);
-    },
-
-    set level(level) {
-        // noinspection FallThroughInSwitchStatementJS
-        const sym = typeof level === "string" ? Symbol.for(level.toLowerCase()) : level;
-        levels.clear();
-        switch (sym) {
-            case TRACE:
-                levels.add(TRACE);
-            case DEBUG:
-                levels.add(DEBUG);
-            case INFO:
-                levels.add(INFO);
-            case WARN:
-                levels.add(WARN);
-            case ERROR:
-                levels.add(ERROR);
-            case NOTHING:
-                return;
-            default:
-                throw new Error("cannot set level: " + level);
-        }
-    },
-
-    get level() {
-        return levels.values().next().value || NOTHING;
     },
 
     setLevel(value) {
@@ -165,7 +127,7 @@ module.exports = {
     },
 
     stringify
-};
+});
 
 Object.defineProperty(module.exports, "write", {
     enumerable: false,
@@ -174,6 +136,67 @@ Object.defineProperty(module.exports, "write", {
     },
     set(replacement) {
         write = replacement;
+    }
+});
+
+Object.defineProperty(module.exports, "details", {
+    enumerable: false,
+    get() {
+        return details;
+    },
+    set(enable) {
+        details = enable;
+    }
+});
+
+Object.defineProperty(module.exports, "level", {
+    enumerable: false,
+    get() {
+        switch (threshold) {
+            case 4:
+                return "trace";
+            case 3:
+                return "debug";
+            case 2:
+                return "info";
+            case 1:
+                return "warn";
+            case 0:
+                return "error";
+            default:
+                return "nothing";
+        }
+    },
+    set(level) {
+        if (typeof level === "number") {
+            if (isNaN(level)) {
+                throw new Error("cannot set level: " + level);
+            }
+            threshold = level;
+            return;
+        } else {
+            switch (level.toLowerCase()) {
+                case "trace":
+                    threshold = 4;
+                    return log;
+                case "debug":
+                    threshold = 3;
+                    return log;
+                case "info":
+                    threshold = 2;
+                    return log;
+                case "warn":
+                    threshold = 1;
+                    return log;
+                case "error":
+                    threshold = 0;
+                    return log;
+                case "nothing":
+                    threshold = -1;
+                    return log;
+            }
+        }
+        throw new Error("cannot set level: " + level);
     }
 });
 

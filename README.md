@@ -1,7 +1,10 @@
 ![logo](https://github.com/glromeo/tiny-node-logger/blob/master/logo.svg?raw=true)
 
-A very simple library to be used in **node.js** for having a server side logging that doesn't hurt!
-> It comes with colouring and file line numbers... if you want
+Because I needed a small and simple library to be used in **node.js** for looking at a console log that doesn't hurt!
+##### Features
+* Syntax coloring
+* Log call site details: filename, line number and column
+* Can be used as functions or as tagged templates
 
 [![Build Status](https://travis-ci.org/glromeo/tiny-node-logger.svg?branch=master)](https://travis-ci.org/glromeo/tiny-node-logger)
 [![Coverage Status](https://coveralls.io/repos/github/glromeo/tiny-node-logger/badge.svg?branch=master)](https://coveralls.io/github/glromeo/tiny-node-logger?branch=master) 
@@ -17,6 +20,13 @@ npm i tiny-node-logger
 ```
 
 ### Example
+As simple as it gets...
+```javascript
+const log = require("tiny-node-logger");
+
+log`Hello world!`
+```
+
 Using tagged templates
 ```javascript
 const {trace, debug, info, warn, error, setLevel} = require("tiny-node-logger");
@@ -52,15 +62,14 @@ produces the following output:
 ![colored log output](https://github.com/glromeo/tiny-node-logger/blob/master/images/example-with-details.png?raw=true)
 
 ### Benchmarks
-enabling the details has a 25% impact of performance
 ```
-simple x 12,480 ops/sec ±1.64% (90 runs sampled)
-tagged templates x 13,341 ops/sec ±0.29% (91 runs sampled)
-detailed x 9,646 ops/sec ±0.44% (89 runs sampled)
-detailed tagged templates x 9,996 ops/sec ±0.44% (92 runs sampled)
-
-Fastest is tagged templates ...
+console.log x 1,494 ops/sec ±0.91% (81 runs sampled)
+simple x 1,426 ops/sec ±1.01% (88 runs sampled)
+tagged templates x 1,487 ops/sec ±1.22% (86 runs sampled)
+detailed x 1,362 ops/sec ±0.83% (84 runs sampled)
+detailed tagged templates x 1,420 ops/sec ±0.85% (86 runs sampled)
 ```
+> The log library is practically as fast as console.log and the impact of enabling the details negligible in comparison to the cost of the write operations
 
 #### References
 

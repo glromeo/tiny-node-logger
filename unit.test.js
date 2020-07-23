@@ -13,27 +13,24 @@ describe("tiny node logger", function () {
         stringify
     } = log;
 
+    let toISOString;
+
     beforeEach(function () {
         log.write = jest.fn();
-        global.Date.toISOString = jest.fn();
+        let instant = 0;
+        toISOString = global.Date.prototype.toISOString;
+        global.Date.prototype.toISOString = jest.fn().mockImplementation(() => {
+            return "1974-04-12T08:30:00."+String(instant++).padStart(3, "0");
+        });
     });
 
     afterEach(function () {
+        global.Date.prototype.toISOString = toISOString;
     });
 
-    function feedISODates(...dates) {
-        let instant = 0;
-        global.Date.toISOString.mockImplementation(function () {
-            return dates[instant++];
-        })
-    }
-
     it("simplest", function () {
-        feedISODates(
-            "2020-06-10T11:51:59.101"
-        );
         log`hello world`;
-        expect(log.write).toBeCalledWith("hello world\n");
+        expect(log.write).toBeCalledWith(`[${chalk.blue("1974-04-12 08:30:00.000")}] hello world\n`);
     });
 
     it("colors", function () {
@@ -48,20 +45,21 @@ describe("tiny node logger", function () {
 
     it("levels", function () {
 
-        expect(log.level.description).toStrictEqual("info");
-        log.level = log.WARN;
-        expect(log.level.description).toStrictEqual("warn");
-        log.level = log.ERROR;
-        expect(log.level.description).toStrictEqual("error");
-        log.level = log.NOTHING;
-        expect(log.level.description).toStrictEqual("nothing");
-        log.level = log.DEBUG;
-        expect(log.level.description).toStrictEqual("debug");
+        expect(log.level).toStrictEqual("info");
+        log.level = "warn";
+        expect(log.level).toStrictEqual("warn");
+        log.level = "error";
+        expect(log.level).toStrictEqual("error");
+        log.level = "nothing";
+        expect(log.level).toStrictEqual("nothing");
+        log.level = "debug";
+        expect(log.level).toStrictEqual("debug");
 
         expect(() => log.level = "unknown").toThrowError("cannot set level: unknown");
+        expect(() => log.level = NaN).toThrowError("cannot set level: NaN");
 
         log.level = "info";
-        expect(log.level.description).toStrictEqual("info");
+        expect(log.level).toStrictEqual("info");
 
         log.info("info");
         expect(log.write).toBeCalledTimes(1);
@@ -75,14 +73,15 @@ describe("tiny node logger", function () {
 
         log.info("info", 123);
 
-        expect(log.write).toHaveBeenNthCalledWith(1, `${chalk.black("info")} 123\n`);
+        expect(log.write).toHaveBeenNthCalledWith(1, `[${chalk.blue("1974-04-12 08:30:00.000")}] ${chalk.black("info")} 123\n`);
 
         log.debug("debug");
         expect(log.write).toBeCalledTimes(1);
 
         log.warn("warning", {a: 0}, {e1: {e2: {e3: {e4: {e5: 0}}}}}, new Error("any error"));
 
-        expect(log.write).toHaveBeenNthCalledWith(2, expect.stringContaining(`${chalk.yellow("warning")} {`));
+        expect(log.write).toHaveBeenNthCalledWith(2, expect.stringContaining(`[${chalk.blue("1974-04-12 08:30:00.001")}] `));
+        expect(log.write).toHaveBeenNthCalledWith(2, expect.stringContaining(` ${chalk.yellow("warning")} {`));
         expect(log.write).toHaveBeenNthCalledWith(2, expect.stringContaining(` { a: ${chalk.yellow("0")} } {`));
         expect(log.write).toHaveBeenNthCalledWith(2, expect.stringContaining(` Error: any error\n    at Object.<anonymous> (`));
         expect(log.write).toHaveBeenNthCalledWith(2, expect.stringContaining(` {\n  e1: { e2: { e3: { e4: ${chalk.cyan("[Object]")} } } }\n} `));
@@ -94,19 +93,22 @@ describe("tiny node logger", function () {
 
     it("logging (tagged template)", function () {
 
-        log.level = "trace";
+        log.level = "TRACE";
+
+        expect(log.level).toBe("trace");
 
         trace`trace ${123} ${chalk.green("green")} `;
 
-        expect(log.write).toHaveBeenNthCalledWith(1, `${chalk.gray("trace ")}123 ${chalk.green("green")} \n`);
+        expect(log.write).toHaveBeenNthCalledWith(1, `[${chalk.blue("1974-04-12 08:30:00.000")}] ${chalk.gray("trace ")}123 ${chalk.green("green")} \n`);
         expect(log.write).toBeCalledTimes(1);
 
         debug`debug`;
 
-        expect(log.write).toHaveBeenNthCalledWith(2, `${chalk.green("debug")}\n`);
+        expect(log.write).toHaveBeenNthCalledWith(2, `[${chalk.blue("1974-04-12 08:30:00.001")}] ${chalk.green("debug")}\n`);
 
         warn`${{a: 0}}, ${new Error("any error")} ${{e1: {e2: {e3: {e4: {e5: 0}}}}}}`;
 
+        expect(log.write).toHaveBeenNthCalledWith(3, expect.stringContaining(`[${chalk.blue("1974-04-12 08:30:00.002")}] `));
         expect(log.write).toHaveBeenNthCalledWith(3, expect.stringContaining(`{ a: ${chalk.yellow("0")} }`));
         expect(log.write).toHaveBeenNthCalledWith(3, expect.stringContaining(`}${chalk.yellow(", ")}Error`));
         expect(log.write).toHaveBeenNthCalledWith(3, expect.stringContaining(`Error: any error\n    at Object.<anonymous> (`));
@@ -146,20 +148,7 @@ describe("tiny node logger", function () {
         expect(stringify("something")).toBe("something");
     });
 
-    it("can log timestamp, file and line number ( 18 lines offset because of jest :( )", function () {
-
-        let instants = [
-            "2020-06-10T11:51:59.101",
-            "2020-06-10T11:51:59.102",
-            "2020-06-10T11:51:59.103",
-            "2020-06-10T11:51:59.104"
-        ], instant = 0;
-
-        global.Date = class {
-            toISOString() {
-                return instants[instant++];
-            }
-        };
+    it("can log timestamp, file and line number ( lines and columns don't quite match because of jest )", function () {
 
         expect(log.details).toBe(false);
 
@@ -171,19 +160,19 @@ describe("tiny node logger", function () {
         log.error("details enabled!");
 
         expect(log.write).toHaveBeenNthCalledWith(1,
-            `[${chalk.blue("2020-06-10 11:51:59.101")}] all.test.js (${164 - 19}:9) ${chalk.black("details enabled!")}\n`
+            `[${chalk.blue("1974-04-12 08:30:00.000")}] unit.test.js (144:9) ${chalk.black("details enabled!")}\n`
         );
         expect(log.write).toHaveBeenNthCalledWith(2,
-            `[${chalk.blue("2020-06-10 11:51:59.102")}] all.test.js (${165 - 19}:9) ${chalk.yellow("details enabled!")}\n`
+            `[${chalk.blue("1974-04-12 08:30:00.001")}] unit.test.js (145:9) ${chalk.yellow("details enabled!")}\n`
         );
         expect(log.write).toHaveBeenNthCalledWith(3,
-            `[${chalk.blue("2020-06-10 11:51:59.103")}] all.test.js (${166 - 19}:9) ${chalk.red("details enabled!")}\n`
+            `[${chalk.blue("1974-04-12 08:30:00.002")}] unit.test.js (146:9) ${chalk.red("details enabled!")}\n`
         );
 
         log.details = false;
 
         log.info("details disabled!");
 
-        expect(log.write).toHaveBeenNthCalledWith(4, `${chalk.black("details disabled!")}\n`);
+        expect(log.write).toHaveBeenNthCalledWith(4, `[${chalk.blue("1974-04-12 08:30:00.003")}] ${chalk.black("details disabled!")}\n`);
     });
 });

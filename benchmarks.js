@@ -1,17 +1,20 @@
 const Benchmark = require("benchmark");
+const readline = require("readline");
 const log = require("./index.js");
 
-let text, next = "";
-
 log.write = function (item) {
-    next = next + item;
-    if (item === "\n") {
-        text = next;
-        next = "";
-    }
+    process.stdout.write(item);
+    readline.cursorTo(process.stdout, 0, 0);
 };
 
+const outcomes = [];
+
 new Benchmark.Suite("tiny-node-logger")
+
+    .add("console.log", function () {
+        console.log("hello world!", 123456, "abc", new Date(), {abc: 123}, new Error());
+        readline.cursorTo(process.stdout, 0, 0);
+    })
 
     .add("simple", function () {
         log.info("hello world!", 123456, "abc", new Date(), {abc: 123}, new Error());
@@ -30,15 +33,18 @@ new Benchmark.Suite("tiny-node-logger")
     })
 
     .on("cycle", function ({target}) {
-        console.log(target.toString());
+        outcomes.push(target.toString());
         if (target.name.endsWith("...")) {
             log.details = true;
-            console.log("switched to details mode...");
         }
     })
 
     .on("complete", function () {
-        console.log("Fastest is " + this.filter("fastest").map("name"));
+        readline.cursorTo(process.stdout, 0, 0);
+        readline.clearScreenDown(process.stdout, () => {
+            outcomes.forEach(outcome=>console.log(outcome));
+            console.log("Fastest is " + this.filter("fastest").map("name"));
+        });
     })
 
     .run({"async": true});
