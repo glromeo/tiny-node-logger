@@ -1,0 +1,53 @@
+{
+  "name": "tiny-node-logger",
+  "version": "1.0.0",
+  "description": "A simple and fast library for a log that doesn't hurt the eyes!",
+  "main": "lib/index.js",
+  "repository": "https://github.com/glromeo/tiny-node-logger.git",
+  "author": "Gianluca Romeo <glromeo@gmail.com>",
+  "license": "MIT",
+  "files": [
+    "lib/index.js",
+    "lib/index.d.ts"
+  ],
+  "keywords": [
+    "log",
+    "logging",
+    "color",
+    "node",
+    "vt-100"
+  ],
+  "devDependencies": {
+    "ansi-to-html": "^0.7.1",
+    "mocha-toolkit": "^1.0.0",
+    "nyc": "^15.1.0",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.3.5"
+  },
+  "scripts": {
+    "prepublish": "tsc",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "test": "nyc mocha test/**/*.test.ts",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "exclude": [
+      "**/*.d.ts",
+      "test/**"
+    ],
+    "reporter": [
+      "text"
+    ],
+    "all": false,
+    "cache": true
+  },
+  "mocha": {
+    "require": [
+      "ts-node/register"
+    ]
+  }
+}

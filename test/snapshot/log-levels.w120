@@ -1,0 +1,6 @@
+[90m00:00:00.000 [100m [90m[49m this is a trace message [105G[90mlog-levels.js[30m:[94m16[39m
+[90m00:00:00.000 [44m [94m[49m this is a debug message [105G[90mlog-levels.js[30m:[94m17[39m
+[90m00:00:00.000 [104m [39m[49m this is an info message [105G[90mlog-levels.js[30m:[94m18[39m
+[90m00:00:00.000 [93m[43m![33m[49m this is a warn message [105G[90mlog-levels.js[30m:[94m19[39m
+[90m00:00:00.000 [91m[41mX[31m[49m this is an error message [105G[90mlog-levels.js[30m:[94m20[39m
+[90m00:00:00.000 [104m [39m[49m log is never ignored [105G[90mlog-levels.js[30m:[94m47[39m
