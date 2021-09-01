@@ -7,6 +7,8 @@ Just because I wanted to read a log that doesn't hurt my eyes!!! 👀
 </h3>
 <hr>
 
+![image](https://user-images.githubusercontent.com/160981/131713469-05d5b88b-ebaf-4357-b31d-1d51e73298f7.png)
+
 ## Features
 
 * 100% test coverage
