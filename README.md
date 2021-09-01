@@ -5,6 +5,7 @@
 <h3 align="center">
 Just because I wanted to read a log that doesn't hurt my eyes!!! 👀
 </h3>
+<hr>
 
 ## Features
 
