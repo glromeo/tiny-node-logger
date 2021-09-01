@@ -19,6 +19,7 @@
   ],
   "devDependencies": {
     "ansi-to-html": "^0.7.1",
+    "coveralls": "^3.1.1",
     "mocha-toolkit": "^1.0.2",
     "nyc": "^15.1.0",
     "ts-node": "^10.2.1",
@@ -29,7 +30,7 @@
     "build": "tsc",
     "build:watch": "tsc --watch",
     "test": "nyc mocha test/**/*.test.ts",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls"
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "nyc": {
     "extension": [

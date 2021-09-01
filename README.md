@@ -18,6 +18,7 @@ Just because I wanted to read a log that doesn't hurt my eyes!!! 👀
 * Daily inspiring quotes 🤦‍♂️
 
 [![Build Status](https://app.travis-ci.com/glromeo/tiny-node-logger.svg?branch=main)](https://app.travis-ci.com/glromeo/tiny-node-logger)
+[![Coverage Status](https://coveralls.io/repos/github/glromeo/tiny-node-logger/badge.svg?branch=main)](https://coveralls.io/github/glromeo/tiny-node-logger?branch=main)
 [![Downloads](https://badgen.net/npm/dt/tiny-node-logger)](https://www.npmjs.com/package/tiny-node-logger)
 [![run on repl.it](https://repl.it/badge/github/glromeo/tiny-node-logger)](https://repl.it/github/glromeo/tiny-node-logger)
 
