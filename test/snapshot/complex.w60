@@ -1,33 +1,9 @@
 [90m00:00:00.000 [104m [39m[49m 2 + 2 = 4
 [90m00:00:00.000 [104m [39m[49m user: { name: [32m'Gianluca'[39m, id: [33m123[39m } aliases: [ [32m'Romeo'[39m, [32m'GL'[39m ]
 [90m00:00:00.000 [104m [39m[49m an error occurred Error: this is the error message
-[90m    at Function.Module._load (node:internal/modules/cjs/loader:813:14)[39m
-[90m    at require (node:internal/modules/cjs/helpers:92:18)[39m
-    at Array.forEach (<anonymous>)
-    at callFn (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runnable.js:366:21)
-    at Test.Runnable.run (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runnable.js:354:5)
-    at Runner.runTest (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:681:10)
-    at D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:804:12
-    at next (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:596:14)
-    at D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:606:7
-    at next (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:489:14)
-    at Immediate._onImmediate (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:574:5)
-[90m    at processImmediate (node:internal/timers:463:21)[39m
 [90m00:00:00.000 [104m [39m[49m 2 + 2 = 4
 [90m00:00:00.000 [104m [39m[49m user: { name: [32m'Gianluca'[39m, id: [33m123[39m } aliases: [ [32m'Romeo'[39m, [32m'GL'[39m ]
 [90m00:00:00.000 [104m [39m[49m an error occurred Error: this is the error message
-[90m    at Function.Module._load (node:internal/modules/cjs/loader:813:14)[39m
-[90m    at require (node:internal/modules/cjs/helpers:92:18)[39m
-    at Array.forEach (<anonymous>)
-    at callFn (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runnable.js:366:21)
-    at Test.Runnable.run (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runnable.js:354:5)
-    at Runner.runTest (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:681:10)
-    at D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:804:12
-    at next (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:596:14)
-    at D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:606:7
-    at next (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:489:14)
-    at Immediate._onImmediate (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:574:5)
-[90m    at processImmediate (node:internal/timers:463:21)[39m
 [90m00:00:00.000 [104m [39m[49m at the beginning of the statement
 [90m00:00:00.000 [104m [39m[49m in the middle of it
 [90m00:00:00.000 [104m [39m[49m as well as at the end

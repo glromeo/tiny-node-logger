@@ -3,16 +3,20 @@ import {mockquire, sinon, unrequire} from "mocha-toolkit";
 import {readdirSync, readFileSync, writeFileSync} from "fs";
 import {resolve} from "path";
 import {fail} from "assert";
+import * as process from "process";
+import * as path from "path";
+
+const UPDATE = process.argv[3] === "--update";
 
 /**
- * When running inside the IDE the call sites differ from when running from the console
- * so we have to strip certain lines from the stack trace to make the comparison possible
+ * When running inside the IDE the call sites differ from when running from the console or in CI
+ * so we have to filter out the stack trace to make the comparison possible
  *
  * @param text
  */
 function sanitize(text: string) {
     return text.split("\n")
-        .filter(line => !line.match(/^(\x1b\[90m)? {4}at (Module\.|Object\.|.+logger.test.ts:)/))
+        .filter(line => !line.match(/^(\x1b\[90m)? {4}at /))
         .join("\n");
 }
 
@@ -96,7 +100,7 @@ describe("tiny-node-logger", function () {
                     try {
                         expect(output).to.eq(readFileSync(path, {encoding: "utf8"}));
                     } catch (error) {
-                        if (error.code === 'ENOENT') {
+                        if (error.code === 'ENOENT' || UPDATE) {
                             writeFileSync(path, output);
                         } else {
                             fail(error);
