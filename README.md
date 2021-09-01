@@ -2,18 +2,64 @@
     <img alt="tiny-node-logger" src="https://raw.githubusercontent.com/glromeo/tiny-node-logger/main/logo.svg">
 </p>
 
-Just because I want to read a log that doesn't hurt the eyes!
+### *Just because I wanted to read a server log that doesn't hurt the eyes!!!* 👀
 
 ## Features
 
+* 100% test coverage
 * Zero dependencies 👌
 * Colored **log levels** for ⚪ TRACE, 🔵 DEBUG, ⚫ INFO, 🟡 WARN and 🔴 ERROR
 * Timestamps and flags to easily spot warnings (!) and errors (X)
-* Uses [Virtual Terminal](https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences) 
-  control sequences
 * Right aligned **filename** & **line numbers** just like in devtools
 * Handles nicely the logging of objects using `util` inspect
 * Daily inspiring quotes 🤦‍♂️
+
+## Install
+
+```bash
+npm install tiny-node-logger
+```
+
+## Usage
+
+### Simple
+```javascript
+const log = require("tiny-node-logger");
+
+// You can either use the logger as a function...
+
+log("Hello world");
+
+// ...or as a tagged template
+
+log`Hello world`;
+```
+
+### Levels
+```javascript
+const {
+  trace, debug, info, warn, error
+} = log;
+
+log.level = "trace";
+
+trace`this is a trace message`;
+debug`this is a debug message`;
+info`this is an info message`;
+warn`this is a warn message`;
+error`this is an error message`;
+```
+*To just use `log(...)` is similar to use `log.info(...)` but it ignores any threshold set by `log.level`.*
+
+For more examples please look in the [fixture](https://github.com/glromeo/tiny-node-logger/tree/main/test/fixture) folder
+
+## Colors & Layout
+
+Coloring and layout are done using [Virtual Terminal](https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences) control sequences.\
+The output has been verified on:
+  * Windows 11 **Command Prompt**, **PowerShell** and **Git bash**
+  * MacOS **Terminal**
+  * Linux (via WSL/2 Ubuntu's **bash**)
 
 ## Benchmark
 ```
