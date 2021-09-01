@@ -3,4 +3,8 @@
 [90m00:00:00.000 [104m [39m[49m this is an info message
 [90m00:00:00.000 [93m[43m![33m[49m this is a warn message
 [90m00:00:00.000 [91m[41mX[31m[49m this is an error message
-[90m00:00:00.000 [104m [39m[49m log is never ignored
+[90m00:00:00.000 [44m [94m[49m this shall pass
+[90m00:00:00.000 [104m [39m[49m this shall pass
+[90m00:00:00.000 [93m[43m![33m[49m this shall pass
+[90m00:00:00.000 [91m[41mX[31m[49m this shall pass
+[90m00:00:00.000 [104m [39m[49m this is written because it's not affected by the "nothing" level

@@ -134,7 +134,7 @@ function writeln(level: string, head: string | TemplateStringsArray, tail: any[]
         const cs = callSite(new Error(), 2);
         const fileName = cs.getFileName() ?? "unknown";
         const shortFilename = fileName.substring(fileName.lastIndexOf(sep) + 1);
-        const lineNumber = cs.getLineNumber() ?? "-";
+        const lineNumber = cs.getLineNumber();
         const suffix = COLOR.BRIGHT_BLACK + shortFilename + COLOR.BLACK + ":" + COLOR.BRIGHT_BLUE + lineNumber + COLOR.DEFAULT;
 
         write(`${line} \x1B[${columns - suffix.length + 21}G${suffix}\n`);

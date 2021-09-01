@@ -1,16 +1,9 @@
-[90m00:00:00.000 [104m [39m[49m with numbers: 1[39m 2, objects: { a: [33m1[39m, b: [32m'2'[39m }, arrays: [ [33m1[39m, [33m2[39m, [33m3[39m ] and exceptions: Error: message!
-    at Object.<anonymous> (D:\Workspace\codebites\tiny-node-logger\test\fixture\complex.js:3:95)
-[90m    at Module._compile (node:internal/modules/cjs/loader:1108:14)[39m
-    at Module.replacementCompile (D:\Workspace\codebites\node_modules\[4mappend-transform[24m\index.js:60:13)
-[90m    at Module._extensions..js (node:internal/modules/cjs/loader:1137:10)[39m
-    at Object.<anonymous> (D:\Workspace\codebites\node_modules\[4mappend-transform[24m\index.js:64:4)
-[90m    at Module.load (node:internal/modules/cjs/loader:973:32)[39m
+[90m00:00:00.000 [104m [39m[49m 2 + 2 = 4 [109G[90mcomplex.js[30m:[94m6[39m
+[90m00:00:00.000 [104m [39m[49m user: { name: [32m'Gianluca'[39m, id: [33m123[39m } aliases: [ [32m'Romeo'[39m, [32m'GL'[39m ] [109G[90mcomplex.js[30m:[94m8[39m
+[90m00:00:00.000 [104m [39m[49m an error occurred Error: this is the error message
 [90m    at Function.Module._load (node:internal/modules/cjs/loader:813:14)[39m
-[90m    at Module.require (node:internal/modules/cjs/loader:997:19)[39m
 [90m    at require (node:internal/modules/cjs/helpers:92:18)[39m
-    at D:\Workspace\codebites\tiny-node-logger\test\logger.test.ts:38:21
     at Array.forEach (<anonymous>)
-    at Context.<anonymous> (D:\Workspace\codebites\tiny-node-logger\test\logger.test.ts:24:19)
     at callFn (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runnable.js:366:21)
     at Test.Runnable.run (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runnable.js:354:5)
     at Runner.runTest (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:681:10)
@@ -19,6 +12,24 @@
     at D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:606:7
     at next (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:489:14)
     at Immediate._onImmediate (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:574:5)
-[90m    at processImmediate (node:internal/timers:463:21)[39m [109G[90mcomplex.js[30m:[94m3[39m
-[90m00:00:00.000 [104m [39m[49m ...also with functional notation:  123 456 [109G[90mcomplex.js[30m:[94m5[39m
-[90m00:00:00.000 [104m [39m[49m just a corner case in the logic [109G[90mcomplex.js[30m:[94m7[39m
+[90m    at processImmediate (node:internal/timers:463:21)[39m [108G[90mcomplex.js[30m:[94m10[39m
+[90m00:00:00.000 [104m [39m[49m 2 + 2 = 4 [108G[90mcomplex.js[30m:[94m15[39m
+[90m00:00:00.000 [104m [39m[49m user: { name: [32m'Gianluca'[39m, id: [33m123[39m } aliases: [ [32m'Romeo'[39m, [32m'GL'[39m ] [108G[90mcomplex.js[30m:[94m17[39m
+[90m00:00:00.000 [104m [39m[49m an error occurred Error: this is the error message
+[90m    at Function.Module._load (node:internal/modules/cjs/loader:813:14)[39m
+[90m    at require (node:internal/modules/cjs/helpers:92:18)[39m
+    at Array.forEach (<anonymous>)
+    at callFn (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runnable.js:366:21)
+    at Test.Runnable.run (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runnable.js:354:5)
+    at Runner.runTest (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:681:10)
+    at D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:804:12
+    at next (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:596:14)
+    at D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:606:7
+    at next (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:489:14)
+    at Immediate._onImmediate (D:\Workspace\codebites\node_modules\[4mmocha[24m\lib\runner.js:574:5)
+[90m    at processImmediate (node:internal/timers:463:21)[39m [108G[90mcomplex.js[30m:[94m19[39m
+[90m00:00:00.000 [104m [39m[49m at the beginning of the statement [108G[90mcomplex.js[30m:[94m24[39m
+[90m00:00:00.000 [104m [39m[49m in the middle of it [108G[90mcomplex.js[30m:[94m26[39m
+[90m00:00:00.000 [104m [39m[49m as well as at the end [108G[90mcomplex.js[30m:[94m28[39m
+[90m00:00:00.000 [104m [39m[49m every token is separated from the adjacent with a space [108G[90mcomplex.js[30m:[94m33[39m
+[90m00:00:00.000 [104m [39m[49m this[39m is[39m not[39m the[39m case[39m using[39m tagged[39m templates [108G[90mcomplex.js[30m:[94m37[39m
