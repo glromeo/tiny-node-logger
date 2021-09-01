@@ -1,8 +1,10 @@
 <p align="center">
     <img alt="tiny-node-logger" src="https://raw.githubusercontent.com/glromeo/tiny-node-logger/main/logo.svg">
 </p>
-
-### *Just because I wanted to read a server log that doesn't hurt the eyes!!!* 👀
+<hr>
+<h3 align="center">
+Just because I wanted to read a log that doesn't hurt my eyes!!! 👀
+</h3>
 
 ## Features
 
@@ -13,6 +15,10 @@
 * Right aligned **filename** & **line numbers** just like in devtools
 * Handles nicely the logging of objects using `util` inspect
 * Daily inspiring quotes 🤦‍♂️
+
+[![Build Status](https://app.travis-ci.com/glromeo/tiny-node-logger.svg?branch=main)](https://app.travis-ci.com/glromeo/tiny-node-logger)
+[![Downloads](https://badgen.net/npm/dt/tiny-node-logger)](https://www.npmjs.com/package/tiny-node-logger)
+[![run on repl.it](https://repl.it/badge/github/glromeo/tiny-node-logger)](https://repl.it/github/glromeo/tiny-node-logger)
 
 ## Install
 
