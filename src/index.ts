@@ -2,29 +2,10 @@ import {inspect} from "util";
 import {sep} from "path";
 import quotes from "./quotes";
 import CallSite = NodeJS.CallSite;
+import module from "module";
 
 export type LogWriter = (text: string) => boolean;
 export type LogLevel = "trace" | "debug" | "info" | "warn" | "error" | "nothing";
-export type TaggedTemplateLogger = (strings: string | TemplateStringsArray, ...keys: any[]) => void;
-export type LoggerObject = {
-    TRACE: "trace";
-    DEBUG: "debug";
-    INFO: "info";
-    WARN: "warn";
-    ERROR: "error";
-    NOTHING: "nothing";
-    trace: TaggedTemplateLogger;
-    debug: TaggedTemplateLogger;
-    info: TaggedTemplateLogger;
-    warn: TaggedTemplateLogger;
-    error: TaggedTemplateLogger;
-    setLevel(level: LogLevel): void;
-    includes(level: string): boolean;
-    get writer(): LogWriter;
-    set writer(writer: LogWriter);
-    get level(): LogLevel;
-    set level(level: LogLevel | number);
-}
 
 export const BACKGROUND = {
     BLACK: "\x1B[40m",	            // Applies non-bold/bright black to background
@@ -76,7 +57,7 @@ const LEVELS = {
     error: ` ${COLOR.BRIGHT_RED + BACKGROUND.RED}X${COLOR.RED + BACKGROUND.DEFAULT} `,
 };
 
-function stringify(o: any): string {
+export function colorify(o: any): string {
     const type = typeof o;
     if (type === "object") {
         return inspect(o, {colors: true, depth: 3});
@@ -115,17 +96,17 @@ function writeln(level: string, head: string | TemplateStringsArray, tail: any[]
     if (Array.isArray(head) && count === (head.length - 1)) {
         for (let i = 0; i < count; i++) {
             if (head[i].length) {
-                line += stringify(head[i]);
+                line += colorify(head[i]);
             }
-            line += stringify(tail[i]);
+            line += colorify(tail[i]);
         }
         if (head[count].length) {
-            line += stringify(head[count]);
+            line += colorify(head[count]);
         }
     } else {
-        line += stringify(head);
+        line += colorify(head);
         for (const item of tail) {
-            line += " " + stringify(item);
+            line += " " + colorify(item);
         }
     }
 
@@ -143,88 +124,90 @@ function writeln(level: string, head: string | TemplateStringsArray, tail: any[]
     }
 }
 
-function log(strings: string | TemplateStringsArray, ...keys: any[]) {
+export function log(strings: string | TemplateStringsArray, ...keys: any[]) {
     return writeln(LEVELS.info, strings, keys);
 }
 
 let threshold = 2;
 
-Object.assign(log, {
+export const TRACE = "trace";
+export const DEBUG = "debug";
+export const INFO = "info";
+export const WARN = "warn";
+export const ERROR = "error";
+export const NOTHING = "nothing";
 
-    TRACE: "trace",
-    DEBUG: "debug",
-    INFO: "info",
-    WARN: "warn",
-    ERROR: "error",
-    NOTHING: "nothing",
+export function trace(strings: string | TemplateStringsArray, ...keys: any[]) {
+    if (threshold >= 4) {
+        writeln(LEVELS.trace, strings, keys);
+    }
+}
 
-    trace(strings: string | TemplateStringsArray, ...keys: any[]) {
-        if (threshold >= 4) {
-            writeln(LEVELS.trace, strings, keys);
-        }
-    },
+export function debug(strings: string | TemplateStringsArray, ...keys: any[]) {
+    if (threshold >= 3) {
+        writeln(LEVELS.debug, strings, keys);
+    }
+}
 
-    debug(strings: string | TemplateStringsArray, ...keys: any[]) {
-        if (threshold >= 3) {
-            writeln(LEVELS.debug, strings, keys);
-        }
-    },
+export function info(strings: string | TemplateStringsArray, ...keys: any[]) {
+    if (threshold >= 2) {
+        writeln(LEVELS.info, strings, keys);
+    }
+}
 
-    info(strings: string | TemplateStringsArray, ...keys: any[]) {
-        if (threshold >= 2) {
-            writeln(LEVELS.info, strings, keys);
-        }
-    },
+export function warn(strings: string | TemplateStringsArray, ...keys: any[]) {
+    if (threshold >= 1) {
+        writeln(LEVELS.warn, strings, keys);
+    }
+}
 
-    warn(strings: string | TemplateStringsArray, ...keys: any[]) {
-        if (threshold >= 1) {
-            writeln(LEVELS.warn, strings, keys);
-        }
-    },
+export function error(strings: string | TemplateStringsArray, ...keys: any[]) {
+    if (threshold >= 0) {
+        writeln(LEVELS.error, strings, keys);
+    }
+}
 
-    error(strings: string | TemplateStringsArray, ...keys: any[]) {
-        if (threshold >= 0) {
-            writeln(LEVELS.error, strings, keys);
-        }
-    },
+export function includes(level: string): boolean {
+    switch (level.toLowerCase()) {
+        case "trace":
+            return threshold >= 4;
+        case "debug":
+            return threshold >= 3;
+        case "info":
+            return threshold >= 2;
+        case "warn":
+            return threshold >= 1;
+        case "error":
+            return threshold >= 0;
+        default:
+            return false;
+    }
+}
 
-    setLevel(value: LogLevel): void {
-        log.level = value;
-    },
+const logger = {
 
-    includes(level: string): boolean {
-        switch (level.toLowerCase()) {
-            case "trace":
-                return threshold >= 4;
-            case "debug":
-                return threshold >= 3;
-            case "info":
-                return threshold >= 2;
-            case "warn":
-                return threshold >= 1;
-            case "error":
-                return threshold >= 0;
-            default:
-                return false;
-        }
-    },
+    TRACE,
+    DEBUG,
+    INFO,
+    WARN,
+    ERROR,
+    NOTHING,
 
-    stringify
-});
+    trace,
+    debug,
+    info,
+    warn,
+    error,
 
-Object.defineProperty(log, "writer", {
-    enumerable: true,
-    get(): LogWriter {
+    get writer(): LogWriter {
         return write;
     },
-    set(writer: LogWriter) {
-        return write = writer;
-    }
-});
 
-Object.defineProperty(log, "level", {
-    enumerable: true,
-    get(): LogLevel {
+    set writer(writer: LogWriter) {
+        write = writer;
+    },
+
+    get level(): LogLevel {
         switch (threshold) {
             case 4:
                 return "trace";
@@ -240,33 +223,39 @@ Object.defineProperty(log, "level", {
                 return "nothing";
         }
     },
-    set(level: LogLevel | string) {
+
+    set level(level: LogLevel | string) {
         switch (level.toLowerCase()) {
             case "trace":
                 threshold = 4;
-                return log;
+                return;
             case "debug":
                 threshold = 3;
-                return log;
+                return;
             case "info":
                 threshold = 2;
-                return log;
+                return;
             case "warn":
                 threshold = 1;
-                return log;
+                return;
             case "error":
                 threshold = 0;
-                return log;
+                return;
             case "nothing":
                 threshold = -1;
-                return log;
+                return;
         }
         throw new Error("cannot set level: " + level);
     }
-});
+};
 
-log.level = "info";
+export function setLevel(value: LogLevel): void {
+    logger.level = value;
+}
 
-module.exports = log;
+Object.defineProperty(exports, "writer", Object.getOwnPropertyDescriptor(logger, "writer")!);
+Object.defineProperty(exports, "level", Object.getOwnPropertyDescriptor(logger, "level")!);
 
-export default log as TaggedTemplateLogger & LoggerObject;
+export default logger;
+
+logger.level = "info";

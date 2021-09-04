@@ -4,7 +4,6 @@ import {readdirSync, readFileSync, writeFileSync} from "fs";
 import {resolve} from "path";
 import {fail} from "assert";
 import * as process from "process";
-import * as path from "path";
 
 const UPDATE = process.argv[3] === "--update";
 
@@ -32,57 +31,62 @@ describe("tiny-node-logger", function () {
 
         const prefix = [];
         this.logger.writer = text => prefix.push(text);
-        this.logger("ready");
+        this.logger.log("ready");
         this.logger.writer = this.defaultWriter;
         this.prefix = prefix;
-    })
+    });
 
-    it("date prefix", function () {
-        const prefix = this.prefix;
-        expect(prefix.length).to.eq(2);
-        expect(prefix[0]).to.match(/^\u001b\[31mThu Jan 01 1970\u001b\[39m/);
-        expect(prefix[1]).to.match(/^\u001b\[90m00:00:00.000 \u001b\[104m \u001b\[39m\u001b\[49m ready/);
-    })
+    describe("unit tests", function () {
 
-    it("inline script", function () {
-        process.stdout.columns = 120;
-        this.logger.writer = function (text: string) {
-            expect(text).to.equal(
-                '\x1b[90m' +
-                '00:00:00.000' +
-                ' ' +
-                '\x1b[104m' +
-                ' ' +
-                '\x1b[39m\x1b[49m' +
-                ' ' +
-                'Hello World' +
-                ' ' +
-                '\x1b[112G\x1b[90m' +
-                'unknown' +
-                '\x1b[30m' +
-                ':' +
-                '\x1b[94m' +
-                '4' +
-                '\x1b[39m' +
-                '\n'
-            );
-        };
-        new Function("log", `
-            log.info("Hello World");
-        `)(this.logger);
-    })
+        it("date prefix", function () {
+            const prefix = this.prefix;
+            expect(prefix.length).to.eq(2);
+            expect(prefix[0]).to.match(/^\u001b\[31mThu Jan 01 1970\u001b\[39m/);
+            expect(prefix[1]).to.match(/^\u001b\[90m00:00:00.000 \u001b\[104m \u001b\[39m\u001b\[49m ready/);
+        });
 
-    it("fixtures", function () {
+        it("inline script", function () {
+            process.stdout.columns = 120;
+            this.logger.writer = function (text: string) {
+                expect(text).to.equal(
+                    "\x1b[90m" +
+                    "00:00:00.000" +
+                    " " +
+                    "\x1b[104m" +
+                    " " +
+                    "\x1b[39m\x1b[49m" +
+                    " " +
+                    "Hello World" +
+                    " " +
+                    "\x1b[112G\x1b[90m" +
+                    "unknown" +
+                    "\x1b[30m" +
+                    ":" +
+                    "\x1b[94m" +
+                    "4" +
+                    "\x1b[39m" +
+                    "\n"
+                );
+            };
+            new Function("log", `
+                log.info("Hello World");
+            `)(this.logger);
+        });
+
+    });
+
+    describe("integration tests", function () {
 
         const fixtures = readdirSync(resolve(__dirname, "./fixture")).map(filename => {
             return filename.substring(0, filename.lastIndexOf("."));
         });
 
-        [60, 120].forEach(columns => {
+        fixtures.forEach(fixture => [60, 120].forEach(columns => {
 
-            process.stdout.columns = columns;
+            it(`${fixture} w${columns}`, function () {
 
-            for (const fixture of fixtures) {
+                process.stdout.columns = columns;
+
                 let output = "";
                 this.logger.writer = function (text: string): boolean {
                     output += sanitize(text);
@@ -91,7 +95,7 @@ describe("tiny-node-logger", function () {
                 this.logger.level = "info";
                 try {
                     const request = `./fixture/${fixture}`;
-                    unrequire(request)
+                    unrequire(request);
                     require(request);
                 } catch (e) {
                     fail(e);
@@ -100,7 +104,7 @@ describe("tiny-node-logger", function () {
                     try {
                         expect(output).to.eq(readFileSync(path, {encoding: "utf8"}));
                     } catch (error) {
-                        if (error.code === 'ENOENT' || UPDATE) {
+                        if (error.code === "ENOENT" || UPDATE) {
                             writeFileSync(path, output);
                         } else {
                             fail(error);
@@ -109,8 +113,9 @@ describe("tiny-node-logger", function () {
                         this.logger.writer = this.defaultWriter;
                     }
                 }
-            }
-        });
-    })
+            });
+        }));
+
+    });
 
 });

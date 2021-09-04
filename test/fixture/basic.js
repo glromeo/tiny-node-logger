@@ -1,4 +1,4 @@
-const log = require("tiny-node-logger");
+const {log} = require("tiny-node-logger");
 
 // You can either use the logger as a function...
 

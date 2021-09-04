@@ -1,6 +1,6 @@
 {
   "name": "tiny-node-logger",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A simple and fast library for a log that doesn't hurt the eyes!",
   "main": "lib/index.js",
   "repository": "https://github.com/glromeo/tiny-node-logger.git",
@@ -10,6 +10,7 @@
     "lib/index.js",
     "lib/index.d.ts"
   ],
+  "types": "lib/index.d.ts",
   "keywords": [
     "log",
     "logging",
@@ -18,6 +19,7 @@
     "vt-100"
   ],
   "devDependencies": {
+    "@types/node": "^16.7.10",
     "ansi-to-html": "^0.7.1",
     "c8": "^7.8.0",
     "coveralls": "^3.1.1",
