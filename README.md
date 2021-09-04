@@ -3,7 +3,7 @@
 </p>
 <hr>
 <h3 align="center">
-Just because I wanted to read a log that doesn't hurt my eyes!!! 👀
+A small and fast library to write logs that don't hurt the eyes!!! 👀
 </h3>
 <hr>
 
@@ -33,8 +33,9 @@ npm install tiny-node-logger
 ## Usage
 
 ### Simple
+
 ```javascript
-const log = require("tiny-node-logger");
+const { log } = require("tiny-node-logger");
 
 // You can either use the logger as a function...
 
@@ -45,13 +46,25 @@ log("Hello world");
 log`Hello world`;
 ```
 
-### Levels
-```javascript
-const {
-  trace, debug, info, warn, error
-} = log;
+### Using import (ES6 / Typescript)
+```typescript
+import logger, {debug} from "tiny-node-logger";
 
-log.level = "trace";
+logger.level = "debug";
+
+debug("Hello modules");
+```
+
+### Levels
+
+```javascript
+const logger = require("tiny-node-logger")
+
+const {
+    trace, debug, info, warn, error
+} = logger;
+
+logger.level = "trace";
 
 trace`this is a trace message`;
 debug`this is a debug message`;
@@ -59,19 +72,25 @@ info`this is an info message`;
 warn`this is a warn message`;
 error`this is an error message`;
 ```
+
 *To just use `log(...)` is similar to use `log.info(...)` but it ignores any threshold set by `log.level`.*
 
-For more examples please look in the [fixture](https://github.com/glromeo/tiny-node-logger/tree/main/test/fixture) folder
+For more examples please look in the [fixture](https://github.com/glromeo/tiny-node-logger/tree/main/test/fixture)
+folder
 
 ## Colors & Layout
 
-Coloring and layout are done using [Virtual Terminal](https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences) control sequences.\
+Coloring and layout are done
+using [Virtual Terminal](https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences) control
+sequences.\
 The output has been verified on:
-  * Windows 11 **Command Prompt**, **PowerShell** and **Git bash**
-  * MacOS **Terminal**
-  * Linux (via WSL/2 Ubuntu's **bash**)
+
+* Windows 11 **Command Prompt**, **PowerShell** and **Git bash**
+* MacOS **Terminal**
+* Linux (via WSL/2 Ubuntu's **bash**)
 
 ## Benchmark
+
 ```
 console.log x 1,655 ops/sec ±4.35% (77 runs sampled)
 simple x 1,596 ops/sec ±3.63% (85 runs sampled)

@@ -1,4 +1,4 @@
-const log = require("tiny-node-logger");
+const {log} = require("tiny-node-logger");
 
 
 // either using functions or tagged templates the logger can handle numbers, objects and Errors
