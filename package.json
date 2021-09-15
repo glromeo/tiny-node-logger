@@ -1,6 +1,6 @@
 {
   "name": "tiny-node-logger",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "A small and fast library to write logs that don't hurt the eyes!",
   "main": "lib/index.js",
   "repository": "https://github.com/glromeo/tiny-node-logger.git",
