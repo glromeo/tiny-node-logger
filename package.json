@@ -1,14 +1,16 @@
 {
   "name": "tiny-node-logger",
   "version": "2.0.0",
-  "description": "A simple and fast library for a log that doesn't hurt the eyes!",
+  "description": "A small and fast library to write logs that don't hurt the eyes!",
   "main": "lib/index.js",
   "repository": "https://github.com/glromeo/tiny-node-logger.git",
   "author": "Gianluca Romeo <glromeo@gmail.com>",
   "license": "MIT",
   "files": [
     "lib/index.js",
-    "lib/index.d.ts"
+    "lib/index.d.ts",
+    "lib/quotes.js",
+    "lib/quotes.d.ts"
   ],
   "types": "lib/index.d.ts",
   "keywords": [
