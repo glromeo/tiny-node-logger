@@ -13,17 +13,17 @@ expect(logger.includes("info")).to.be.true;
 expect(logger.includes("warn")).to.be.true;
 expect(logger.includes("error")).to.be.true;
 
-// the level can be changed using the setter
+// the level can be changed using the level property an a string value
 
-logger.setLevel("debug");
+logger.level = "debug";
 
 expect(logger.level).to.eq("debug");
 
 expect(logger.includes("debug")).to.be.true;
 
-// or with the level property
+// or with the level property and a constant
 
-logger.level = "trace";
+logger.level = logger.TRACE;
 
 expect(logger.level).to.eq("trace");
 

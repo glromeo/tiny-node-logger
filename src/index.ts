@@ -2,7 +2,6 @@ import {inspect} from "util";
 import {sep} from "path";
 import quotes from "./quotes";
 import CallSite = NodeJS.CallSite;
-import module from "module";
 
 export type LogWriter = (text: string) => boolean;
 export type LogLevel = "trace" | "debug" | "info" | "warn" | "error" | "nothing";
@@ -79,7 +78,7 @@ function callSite(error: Error, depth: number): CallSite {
 let write: LogWriter = process.stdout.write.bind(process.stdout);
 let lastDay = -1;
 
-function writeln(level: string, head: string | TemplateStringsArray, tail: any[]): void {
+function writeln(level: string, head: TemplateStringsArray | any, tail: any[]): void {
 
     const count = tail.length;
 
@@ -124,10 +123,6 @@ function writeln(level: string, head: string | TemplateStringsArray, tail: any[]
     }
 }
 
-export function log(strings: string | TemplateStringsArray, ...keys: any[]) {
-    return writeln(LEVELS.info, strings, keys);
-}
-
 let threshold = 2;
 
 export const TRACE = "trace";
@@ -137,31 +132,35 @@ export const WARN = "warn";
 export const ERROR = "error";
 export const NOTHING = "nothing";
 
-export function trace(strings: string | TemplateStringsArray, ...keys: any[]) {
+export function log(strings: TemplateStringsArray | any, ...keys: any[]) {
+    return writeln(LEVELS.info, strings, keys);
+}
+
+export function trace(strings: TemplateStringsArray | any, ...keys: any[]) {
     if (threshold >= 4) {
         writeln(LEVELS.trace, strings, keys);
     }
 }
 
-export function debug(strings: string | TemplateStringsArray, ...keys: any[]) {
+export function debug(strings: TemplateStringsArray | any, ...keys: any[]) {
     if (threshold >= 3) {
         writeln(LEVELS.debug, strings, keys);
     }
 }
 
-export function info(strings: string | TemplateStringsArray, ...keys: any[]) {
+export function info(strings: TemplateStringsArray | any, ...keys: any[]) {
     if (threshold >= 2) {
         writeln(LEVELS.info, strings, keys);
     }
 }
 
-export function warn(strings: string | TemplateStringsArray, ...keys: any[]) {
+export function warn(strings: TemplateStringsArray | any, ...keys: any[]) {
     if (threshold >= 1) {
         writeln(LEVELS.warn, strings, keys);
     }
 }
 
-export function error(strings: string | TemplateStringsArray, ...keys: any[]) {
+export function error(strings: TemplateStringsArray | any, ...keys: any[]) {
     if (threshold >= 0) {
         writeln(LEVELS.error, strings, keys);
     }
@@ -193,11 +192,15 @@ const logger = {
     ERROR,
     NOTHING,
 
+    log,
+
     trace,
     debug,
     info,
     warn,
     error,
+
+    includes,
 
     get writer(): LogWriter {
         return write;
@@ -249,13 +252,9 @@ const logger = {
     }
 };
 
-export function setLevel(value: LogLevel): void {
-    logger.level = value;
-}
+logger.level = "info";
 
 Object.defineProperty(exports, "writer", Object.getOwnPropertyDescriptor(logger, "writer")!);
 Object.defineProperty(exports, "level", Object.getOwnPropertyDescriptor(logger, "level")!);
 
-export default logger;
-
-logger.level = "info";
+export default Object.defineProperties(log, Object.getOwnPropertyDescriptors(logger)) as typeof log & typeof logger;
