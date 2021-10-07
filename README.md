@@ -103,4 +103,3 @@ Fastest is console.log ...BUT NOT BY MUCH!!!
 
 * Logo created using [maketext.io](https://maketext.io)
 * Filename & line number extracted with [v8 stack-trace-api](https://v8.dev/docs/stack-trace-api)
-* HTML snapshots generated using [ansi-to-html](https://github.com/rburns/ansi-to-html)
