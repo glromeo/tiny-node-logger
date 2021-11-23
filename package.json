@@ -1,6 +1,6 @@
 {
   "name": "tiny-node-logger",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A small and fast library to write logs that don't hurt the eyes!",
   "main": "lib/index.js",
   "repository": "https://github.com/glromeo/tiny-node-logger.git",
@@ -22,7 +22,7 @@
   ],
   "devDependencies": {
     "@types/node": "^16.11.9",
-    "mocha-toolkit": "^1.0.4",
+    "mocha-toolkit": "^1.0.5",
     "typescript": "^4.5.2"
   },
   "scripts": {
