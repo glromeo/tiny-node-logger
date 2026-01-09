@@ -1,6 +1,5 @@
 import {inspect} from "util";
 import {sep} from "path";
-import quotes from "./quotes";
 import CallSite = NodeJS.CallSite;
 
 export type LogWriter = (text: string) => boolean;
@@ -84,7 +83,7 @@ function writeln(level: string, head: TemplateStringsArray | any, tail: any[]): 
 
     const date = new Date();
     if (date.getDay() > lastDay) {
-        write(COLOR.RED + date.toDateString() + COLOR.DEFAULT + " – " + quotes[Math.floor(Math.random() * quotes.length)] + "\n");
+        write(`${COLOR.RED + date.toDateString() + COLOR.DEFAULT}\n`);
         lastDay = date.getDay();
     }
 

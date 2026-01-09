@@ -10,9 +10,7 @@ setTimeout(function () {
     log.warn("Hello world!");
     log.error("Hello world!");
 
-    const {trace, debug, info, warn, error, setLevel} = log;
-
-    setLevel("trace");
+    const {trace, debug, info, warn, error} = log;
 
     trace`Hello world!`;
     debug`Hello world!`;

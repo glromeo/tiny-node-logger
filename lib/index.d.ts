@@ -1,5 +1,5 @@
-export declare type LogWriter = (text: string) => boolean;
-export declare type LogLevel = "trace" | "debug" | "info" | "warn" | "error" | "nothing";
+export type LogWriter = (text: string) => boolean;
+export type LogLevel = "trace" | "debug" | "info" | "warn" | "error" | "nothing";
 export declare const BACKGROUND: {
     BLACK: string;
     RED: string;
