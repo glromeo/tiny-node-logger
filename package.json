@@ -1,18 +1,14 @@
 {
   "name": "tiny-node-logger",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "description": "A small and fast library to write logs that don't hurt the eyes!",
-  "main": "lib/index.js",
-  "repository": "https://github.com/glromeo/tiny-node-logger.git",
   "author": "Gianluca Romeo <glromeo@gmail.com>",
   "license": "MIT",
-  "files": [
-    "lib/index.js",
-    "lib/index.d.ts",
-    "lib/quotes.js",
-    "lib/quotes.d.ts"
-  ],
-  "types": "lib/index.d.ts",
+  "bugs": {
+    "url": "https://github.com/glromeo/tiny-node-logger/issues"
+  },
+  "homepage": "https://github.com/glromeo/tiny-node-logger",
+  "repository": "https://github.com/glromeo/tiny-node-logger.git",
   "keywords": [
     "log",
     "logging",
@@ -20,21 +16,24 @@
     "node",
     "vt-100"
   ],
+  "type": "commonjs",
+  "main": "index.cjs",
+  "types": "index.d.ts",
+  "files": [
+    "index.cjs",
+    "index.d.ts"
+  ],
   "devDependencies": {
-    "@types/node": "^18.6.4",
-    "mocha-toolkit": "^2.1.0",
-    "typescript": "^4.7.4"
+    "c8": "^10.1.3",
+    "chai": "^6.2.2",
+    "mocha": "^11.7.5",
+    "sinon": "^21.0.1",
+    "tiny-node-logger": "file:."
   },
   "scripts": {
-    "prepublish": "tsc",
-    "build": "tsc",
-    "build:watch": "tsc --watch",
-    "test": "c8 mocha test/**/*.test.ts",
+    "benchmarks": "node test/benchmarks.cjs",
+    "examples": "node test/examples.cjs",
+    "test": "c8 mocha --require ./test/setup.cjs test/logging.spec.cjs test/features.spec.cjs",
     "coverage": "c8 report --reporter=text-lcov | coveralls"
-  },
-  "mocha": {
-    "require": [
-      "ts-node/register"
-    ]
   }
 }
